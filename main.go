@@ -6,32 +6,72 @@ import (
 	"sync"
 )
 
-var counter int = 0
+var counterWithoutMutex int
 
-func incrementor(wg *sync.WaitGroup) {
+var (
+	counterWithMutex int
+	mu               sync.Mutex
+)
+
+const (
+	numGoroutines   = 1000
+	incrementsPerGo = 1000
+)
+
+func incrementorRace(wg *sync.WaitGroup) {
 	defer wg.Done()
-	for i := 0; i < 20; i++ {
-		counter++
-		fmt.Println(counter)
+
+	for i := 0; i < incrementsPerGo; i++ {
+		counterWithoutMutex++
+	}
+}
+
+func incrementorMutex(wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	for i := 0; i < incrementsPerGo; i++ {
+		mu.Lock()
+		counterWithMutex++
+		mu.Unlock()
 	}
 }
 
 func main() {
-	fmt.Println("CPU cores:", runtime.NumCPU())
-	fmt.Println("Goroutines:", runtime.NumGoroutine())
+	fmt.Println("CPU cores available:", runtime.NumCPU())
+	fmt.Println("Initial active goroutines:", runtime.NumGoroutine())
+	fmt.Println("--------------------------------------------------")
 
-	var wg sync.WaitGroup
-	const numGoroutines = 1000
+	fmt.Println("Running counter WITHOUT mutex (expect race condition)...")
+	counterWithoutMutex = 0
+	var wgRace sync.WaitGroup
+
 	for i := 0; i < numGoroutines; i++ {
-		wg.Add(1)
-		go incrementor(&wg)
+		wgRace.Add(1)
+		go incrementorRace(&wgRace)
 	}
 
-	wg.Wait()
-	fmt.Println("Final counter value (without mutex):", counter)
+	wgRace.Wait()
 
-	fmt.Println("Expected value: 1000000")
+	fmt.Printf("Final counter value (without mutex): %d\n", counterWithoutMutex)
+	expectedValue := numGoroutines * incrementsPerGo
+	fmt.Printf("Expected value: %d (but likely less due to race condition)\n", expectedValue)
+	fmt.Println("--------------------------------------------------")
 
-	fmt.Println("Goroutines at end:", runtime.NumGoroutine())
+	fmt.Println("Running counter WITH mutex (expect correct result)...")
+	counterWithMutex = 0
+	var wgMutex sync.WaitGroup
 
+	for i := 0; i < numGoroutines; i++ {
+		wgMutex.Add(1)
+		go incrementorMutex(&wgMutex)
+	}
+
+	wgMutex.Wait()
+
+	fmt.Printf("Final counter value (with mutex): %d\n", counterWithMutex)
+	fmt.Printf("Expected value: %d (should be correct)\n", expectedValue)
+	fmt.Println("--------------------------------------------------")
+
+	fmt.Println("Total active goroutines at end:", runtime.NumGoroutine())
+	fmt.Println("Demonstration finished.")
 }
