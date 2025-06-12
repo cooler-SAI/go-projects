@@ -16,6 +16,7 @@ var (
 const (
 	numGoroutines   = 1000
 	incrementsPerGo = 1000
+	expectedValue   = numGoroutines * incrementsPerGo
 )
 
 func incrementorNoMutex(wg *sync.WaitGroup) {
@@ -53,7 +54,7 @@ func main() {
 	wgNoMutex.Wait()
 
 	fmt.Printf("Final counter value (without mutex): %d\n", counterWithoutMutex)
-	expectedValue := numGoroutines * incrementsPerGo
+
 	fmt.Printf("Expected value: %d (but likely less due to race condition)\n", expectedValue)
 	fmt.Println("--------------------------------------------------")
 
