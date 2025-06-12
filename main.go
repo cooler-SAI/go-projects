@@ -43,14 +43,14 @@ func main() {
 
 	fmt.Println("Running counter WITHOUT mutex (expect race condition)...")
 	counterWithoutMutex = 0
-	var wgRace sync.WaitGroup
+	var wgNoMutex sync.WaitGroup
 
 	for i := 0; i < numGoroutines; i++ {
-		wgRace.Add(1)
-		go incrementorNoMutex(&wgRace)
+		wgNoMutex.Add(1)
+		go incrementorNoMutex(&wgNoMutex)
 	}
 
-	wgRace.Wait()
+	wgNoMutex.Wait()
 
 	fmt.Printf("Final counter value (without mutex): %d\n", counterWithoutMutex)
 	expectedValue := numGoroutines * incrementsPerGo
