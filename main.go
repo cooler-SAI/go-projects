@@ -18,7 +18,7 @@ const (
 	incrementsPerGo = 1000
 )
 
-func incrementorRace(wg *sync.WaitGroup) {
+func incrementorNoMutex(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for i := 0; i < incrementsPerGo; i++ {
@@ -47,7 +47,7 @@ func main() {
 
 	for i := 0; i < numGoroutines; i++ {
 		wgRace.Add(1)
-		go incrementorRace(&wgRace)
+		go incrementorNoMutex(&wgRace)
 	}
 
 	wgRace.Wait()
