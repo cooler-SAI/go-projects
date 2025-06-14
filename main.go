@@ -11,6 +11,7 @@ var wg sync.WaitGroup
 
 func worker(id int) {
 	defer wg.Done()
+	id = 20
 	mu.Lock()
 	counter++
 	mu.Unlock()
