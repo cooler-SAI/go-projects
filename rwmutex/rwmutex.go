@@ -25,12 +25,12 @@ func (sm *SafeMap) Set(key, value string) {
 	fmt.Printf("Set: Key '%s' implement into '%s'\n", key, value)
 }
 
-func (sm *SafeMap) Get(key string) (string, bool) {
+func (sm *SafeMap) Get(key string) string {
 	sm.mu.RLock()
 	defer sm.mu.RUnlock()
 	value, ok := sm.data[key]
 	fmt.Printf("Get: Reading key '%s', got '%s' (sucseed: %t)\n", key, value, ok)
-	return value, ok
+	return value
 }
 
 func readWorker(id int, sm *SafeMap, wg *sync.WaitGroup) {
@@ -38,7 +38,8 @@ func readWorker(id int, sm *SafeMap, wg *sync.WaitGroup) {
 	keys := []string{"keyA", "keyB", "keyC", "keyD"}
 	for i := 0; i < 5; i++ {
 		key := keys[rand.Intn(len(keys))]
-		sm.Get(key)
+		value := sm.Get(key)
+		fmt.Printf("Worker %d: got %s => %v\n", id, key, value)
 		time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 	}
 }
