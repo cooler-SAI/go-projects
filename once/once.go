@@ -1,33 +1,44 @@
 package main
 
 import (
-	"fmt"
+	"github.com/cooler-SAI/go-Tools/zerolog"
+	"github.com/rs/zerolog/log"
 	"sync"
 	"time"
 )
 
 var config string
-
 var once sync.Once
 
 func initializeConfig() {
-	fmt.Println("Initializing configuration...")
+	log.Info().Msg("Initializing configuration...")
 	time.Sleep(500 * time.Millisecond)
 	config = "Application Configuration Loaded"
-	fmt.Println("Configuration initialized!")
+	log.Info().Msg("Configuration initialized!")
 }
 
 func worker(id int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Printf("Worker %d: Attempting to load config...\n", id)
+
+	log.Info().
+		Int("worker_id", id).
+		Msg("Worker attempting to load config...")
+
 	once.Do(initializeConfig)
-	fmt.Printf("Worker %d: Config: %s\n", id, config)
+
+	log.Info().
+		Int("worker_id", id).
+		Str("config", config).
+		Msg("Worker accessed config")
 }
 
 func main() {
-	fmt.Println("Starting sync.Once demonstration...")
-	var wg sync.WaitGroup
 
+	zerolog.ConfigureZerologConsoleWriter()
+
+	log.Info().Msg("Starting sync.Once demonstration...")
+
+	var wg sync.WaitGroup
 	const numWorkers = 5
 
 	for i := 1; i <= numWorkers; i++ {
@@ -36,7 +47,10 @@ func main() {
 	}
 
 	wg.Wait()
-	fmt.Println("All workers completed.")
-	fmt.Println("Demonstration finished.")
 
+	log.Info().
+		Int("workers_count", numWorkers).
+		Msg("All workers completed")
+
+	log.Info().Msg("Demonstration finished")
 }
