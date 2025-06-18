@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/cooler-SAI/go-Tools/stoper"
 	"github.com/cooler-SAI/go-Tools/zerolog"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -33,6 +34,7 @@ func worker(id int, wg *sync.WaitGroup) {
 }
 
 func main() {
+	stoper.ListenForGracefulShutdown()
 
 	zerolog.ConfigureZerologConsoleWriter()
 
