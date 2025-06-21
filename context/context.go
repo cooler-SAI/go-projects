@@ -13,16 +13,13 @@ func performLongTask(ctx context.Context, taskName string, duration time.Duratio
 	fmt.Printf("%s: Starting task for %s...\n", taskName, duration)
 
 	select {
-	case <-time.After(duration): // Wait for simulated task completion
+	case <-time.After(duration):
 		fmt.Printf("%s: Task completed successfully!\n", taskName)
-
 	case <-ctx.Done(): // Listen for context cancellation
 		// If ctx.Done() channel is closed, it means context was canceled.
 		// ctx.Err() returns cancellation reason (e.g., context.DeadlineExceeded).
-
 		fmt.Printf("%s: Task canceled! Reason: %v\n", taskName, ctx.Err())
 	}
-
 }
 
 func main() {
