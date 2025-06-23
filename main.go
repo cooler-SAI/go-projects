@@ -1,8 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"github.com/cooler-SAI/go-Tools/zerolog"
+)
 
 func main() {
 
-	fmt.Println("Testing....")
+	zerolog.Init()
+
+	zerolog.Log.Info().Msg("Application started")
+
+	zerolog.Log.Warn().
+		Str("component", "main").
+		Int("count", 42).
+		Msg("Warning message")
 }

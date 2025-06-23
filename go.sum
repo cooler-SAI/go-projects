@@ -1,5 +1,9 @@
 github.com/cooler-SAI/go-Tools v0.0.5 h1:MbySpnuGxrQ44+4mLVh2hUyCzOCvAl4dUsy1LOkicPc=
 github.com/cooler-SAI/go-Tools v0.0.5/go.mod h1:K4+vXrOoeo0K78KeeMtU/YHuEqwnNOZ2hAu5De3g/iA=
+github.com/cooler-SAI/go-Tools v0.0.7 h1:796Fl9KQERBFk835vZ3Ad4vJ6Ya0vwi6fEHojxTgsSE=
+github.com/cooler-SAI/go-Tools v0.0.7/go.mod h1:K4+vXrOoeo0K78KeeMtU/YHuEqwnNOZ2hAu5De3g/iA=
+github.com/cooler-SAI/go-Tools v0.0.8 h1:UjheSl7fGX0cgjhrFI/WwzQ4qCdV3MSe4Jba+Kojqfw=
+github.com/cooler-SAI/go-Tools v0.0.8/go.mod h1:K4+vXrOoeo0K78KeeMtU/YHuEqwnNOZ2hAu5De3g/iA=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovkB8vQcUbaXHg=
