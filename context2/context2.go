@@ -9,19 +9,22 @@ import (
 func doSomething(ctx context.Context) {
 	for {
 		select {
-		case <-time.After(500 * time.Millisecond):
-			fmt.Println("Doing Job...")
+		case <-time.After(1 * time.Second):
+			fmt.Println("Doing something...")
+
 		case <-ctx.Done():
-			fmt.Println("Context finished:", ctx.Err())
-			return
+			fmt.Println("Context is done")
 		}
 	}
 }
 
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
 	defer cancel()
+
 	go doSomething(ctx)
 
-	time.Sleep(3 * time.Second)
+	time.Sleep(5 * time.Second)
+
 }
