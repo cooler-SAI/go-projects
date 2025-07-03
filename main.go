@@ -14,4 +14,5 @@ func main() {
 		Str("component", "main").
 		Int("count", 42).
 		Msg("Warning message")
+	zerolog.Log.Printf("Warning!!!")
 }
