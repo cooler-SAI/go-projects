@@ -36,7 +36,7 @@ func worker(id int, wg *sync.WaitGroup) {
 func main() {
 	stoper.ListenForGracefulShutdown()
 
-	zerolog.ConfigureZerologConsoleWriter()
+	zerolog.Init()
 
 	log.Info().Msg("Starting sync.Once demonstration...")
 
