@@ -12,9 +12,8 @@ func main() {
 
 	zerolog.Init()
 
-	// Горутина, которая ждёт сигнала
 	go func() {
-		zerolog.Log.Info().Msg("Starting sync.Once demonstration...")
+		zerolog.Log.Info().Msg("Starting sync.Cond demonstration...")
 		cond.L.Lock()
 		cond.Wait()
 		cond.L.Unlock()
