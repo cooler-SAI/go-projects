@@ -15,8 +15,8 @@ func main() {
 	go func() {
 		zerolog.Log.Info().Msg("Starting sync.Cond demonstration...")
 		cond.L.Lock()
+		defer cond.L.Unlock()
 		cond.Wait()
-		cond.L.Unlock()
 		zerolog.Log.Info().Msg("I got a signal! Gratz!")
 	}()
 
@@ -24,8 +24,26 @@ func main() {
 		time.Sleep(5 * time.Second)
 		zerolog.Log.Info().Msg("Sending a signal...")
 		cond.L.Lock()
+		defer cond.L.Unlock()
 		cond.Signal()
-		cond.L.Unlock()
+	}()
+
+	var rwMU sync.RWMutex
+	condRW := sync.NewCond(rwMU.RLocker())
+
+	go func() {
+		rwMU.RLock()
+		defer rwMU.RUnlock()
+		condRW.Wait()
+		zerolog.Log.Info().Msg("I got a RWMutex signal! Gratz!")
+	}()
+
+	go func() {
+		time.Sleep(5 * time.Second)
+		zerolog.Log.Info().Msg("Sending RWMutex signal...")
+		rwMU.Lock()
+		defer rwMU.Unlock()
+		condRW.Signal()
 	}()
 
 	time.Sleep(6 * time.Second)
