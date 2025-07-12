@@ -23,6 +23,7 @@ func worker(id int, results chan<- workerResult, wg *sync.WaitGroup) {
 		err := errors.New(fmt.Sprintf("Worker %d: Failed due to random error", id))
 		results <- workerResult{id: id, err: err}
 		fmt.Printf("Worker %d: Task failed.\n", id)
+		return
 	}
 
 	value := fmt.Sprintf("Data from Worker %d", id)
