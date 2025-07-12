@@ -105,26 +105,33 @@ func main() {
 	// --- 4. Updating data ---
 	fmt.Println("\nUpdating data (Alexey's age)...")
 	updateSQL := `UPDATE persons SET age = $1 WHERE name = $2;`
-	res, err := db.Exec(updateSQL, 31, "Alexey")
+
+	resAlex, err := db.Exec(updateSQL, 31, "Alexey")
 	if err != nil {
 		log.Fatalf("Error updating Alexey: %v", err)
 	}
-	rowsAffected, _ := res.RowsAffected()
-	fmt.Printf("Rows updated: %d\n", rowsAffected)
+	alexRows, _ := resAlex.RowsAffected()
+
+	resMaria, err := db.Exec(updateSQL, 26, "Maria")
+	if err != nil {
+		log.Fatalf("Error updating Maria: %v", err)
+	}
+	mariaRows, _ := resMaria.RowsAffected()
+	fmt.Printf("Alexey rows updated: %d, Maria rows updated: %d\n",
+		alexRows, mariaRows)
 
 	// --- 5. Deleting data (optional) ---
 	// Commented by default to keep data for multiple runs
 	// Uncomment if you want to test deletion
-	/*
-	   fmt.Println("\nDeleting data (Maria)...")
-	   deleteSQL := `DELETE FROM persons WHERE name = $1;`
-	   res, err = db.Exec(deleteSQL, "Maria")
-	   if err != nil {
-	       log.Fatalf("Error deleting Maria: %v", err)
-	   }
-	   rowsAffected, _ = res.RowsAffected()
-	   fmt.Printf("Rows deleted: %d\n", rowsAffected)
-	*/
+
+	fmt.Println("\nDeleting data (Maria)...")
+	deleteSQL := `DELETE FROM persons WHERE name = $1;`
+	resMariaDel, err := db.Exec(deleteSQL, "Maria")
+	if err != nil {
+		log.Fatalf("Error deleting Maria: %v", err)
+	}
+	mariaRows, _ = resMariaDel.RowsAffected()
+	fmt.Printf("Rows deleted: %d\n", mariaRows)
 
 	fmt.Println("\nPostgreSQL with Go demonstration completed.")
 	fmt.Println("You can stop the Docker container with: docker stop my-postgres")
