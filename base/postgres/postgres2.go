@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS cars(
 
 	// -- Insert Data
 	insertSQL := `INSERT INTO cars(brand, model, year) VALUES ($1, $2, $3)
-RETURNING id, brand, model, year;` // Added brand to RETURNING clause
+RETURNING id, brand, model, year;`
 
 	var (
 		insertedID    int
@@ -75,7 +75,62 @@ RETURNING id, brand, model, year;` // Added brand to RETURNING clause
 		insertedYear  int
 	)
 
+	// Insert Toyota
 	err = db.QueryRow(insertSQL, "Toyota", "Camry", 2022).Scan(
+		&insertedID,
+		&insertedBrand,
+		&insertedModel,
+		&insertedYear,
+	)
+	if err != nil {
+		log.Fatalf("Error inserting car: %v", err)
+	}
+
+	fmt.Printf("Inserted: %s with ID: %d, Model: %s, Year: %d\n",
+		insertedBrand,
+		insertedID,
+		insertedModel,
+		insertedYear,
+	)
+
+	// Insert Honda
+	err = db.QueryRow(insertSQL, "Honda", "Accord", 2021).Scan(
+		&insertedID,
+		&insertedBrand,
+		&insertedModel,
+		&insertedYear,
+	)
+	if err != nil {
+		log.Fatalf("Error inserting car: %v", err)
+	}
+
+	fmt.Printf("Inserted: %s with ID: %d, Model: %s, Year: %d\n",
+		insertedBrand,
+		insertedID,
+		insertedModel,
+		insertedYear,
+	)
+
+	// Insert BMW
+	err = db.QueryRow(insertSQL, "BMW", "X5", 2023).Scan(
+		&insertedID,
+		&insertedBrand,
+		&insertedModel,
+		&insertedYear,
+	)
+	if err != nil {
+		log.Fatalf("Error inserting car: %v", err)
+	}
+
+	fmt.Printf("Inserted: %s with ID: %d, Model: %s, Year: %d\n",
+		insertedBrand,
+		insertedID,
+		insertedModel,
+		insertedYear,
+	)
+
+	// Insert Tesla
+	err = db.QueryRow(insertSQL, "Tesla", "Model 3", 2022).Scan(
 		&insertedID,
 		&insertedBrand,
 		&insertedModel,
