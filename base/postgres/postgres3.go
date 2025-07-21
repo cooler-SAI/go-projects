@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-type Car struct {
+type Phone struct {
 	ID    int
 	Brand string
 	Model string
@@ -22,7 +22,7 @@ func main() {
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Cant open connection with DB: %v. \nPlease add posgreSQL "+
+		log.Fatalf("Can't open connection with DB: %v. \nPlease add posgreSQL "+
 			"support in import here: _ github.com/lib/pq", err)
 		return
 	}
@@ -35,23 +35,14 @@ func main() {
 
 	err = db.Ping()
 	if err != nil {
-		log.Fatalf("Cant open DB: %v", err)
+		log.Fatalf("Can't open DB: %v", err)
 		return
 	}
 	fmt.Println("Successfully connected to PostgreSQL database")
 
-	/*// -- Delete DB
-	deleteTableSQL := `DROP TABLE IF EXISTS cars;`
-	_, err = db.Exec(deleteTableSQL)
-	if err != nil {
-		log.Fatalf("Cant delete table: %v", err)
-		return
-	}
-	fmt.Println("Table 'cars' deleted successfully")*/
-
 	// -- Create Table
 	createTableSQL := `
-CREATE TABLE IF NOT EXISTS cars(
+CREATE TABLE IF NOT EXISTS phones(
     id SERIAL PRIMARY KEY,
     brand VARCHAR(100) NOT NULL,
     model VARCHAR(100) NOT NULL,
@@ -59,13 +50,13 @@ CREATE TABLE IF NOT EXISTS cars(
 )`
 	_, err = db.Exec(createTableSQL)
 	if err != nil {
-		log.Fatalf("Cant create table: %v", err)
+		log.Fatalf("Can't create table: %v", err)
 		return
 	}
-	fmt.Println("Table 'cars' created successfully")
+	fmt.Println("Table 'phones' created successfully")
 
 	// -- Insert Data
-	insertSQL := `INSERT INTO cars(brand, model, year) VALUES ($1, $2, $3)
+	insertSQL := `INSERT INTO phones(brand, model, year) VALUES ($1, $2, $3)
 RETURNING id, brand, model, year;`
 
 	var (
@@ -75,15 +66,15 @@ RETURNING id, brand, model, year;`
 		insertedYear  int
 	)
 
-	// Insert Toyota
-	err = db.QueryRow(insertSQL, "Toyota", "Camry", 2022).Scan(
+	// Insert Nokia
+	err = db.QueryRow(insertSQL, "Nokia", "3310", 2000).Scan(
 		&insertedID,
 		&insertedBrand,
 		&insertedModel,
 		&insertedYear,
 	)
 	if err != nil {
-		log.Fatalf("Error inserting car: %v", err)
+		log.Fatalf("Error inserting phone: %v", err)
 	}
 
 	fmt.Printf("Inserted: %s with ID: %d, Model: %s, Year: %d\n",
@@ -93,26 +84,8 @@ RETURNING id, brand, model, year;`
 		insertedYear,
 	)
 
-	// Insert Honda
-	err = db.QueryRow(insertSQL, "Honda", "Accord", 2021).Scan(
-		&insertedID,
-		&insertedBrand,
-		&insertedModel,
-		&insertedYear,
-	)
-	if err != nil {
-		log.Fatalf("Error inserting car: %v", err)
-	}
-
-	fmt.Printf("Inserted: %s with ID: %d, Model: %s, Year: %d\n",
-		insertedBrand,
-		insertedID,
-		insertedModel,
-		insertedYear,
-	)
-
-	// --- 3. Reading all data ---
-	rows, err := db.Query("SELECT id, brand, model, year FROM cars ORDER BY id")
+	// --- Reading all data ---
+	rows, err := db.Query("SELECT id, brand, model, year FROM phones ORDER BY id")
 	if err != nil {
 		log.Fatalf("Error querying data: %v", err)
 	}
@@ -123,15 +96,15 @@ RETURNING id, brand, model, year;`
 		}
 	}(rows)
 
-	fmt.Println("\nAll cars in database:")
+	fmt.Println("\nAll phones in database:")
 	for rows.Next() {
-		var c Car
-		err := rows.Scan(&c.ID, &c.Brand, &c.Model, &c.Year)
+		var p Phone
+		err := rows.Scan(&p.ID, &p.Brand, &p.Model, &p.Year)
 		if err != nil {
 			log.Fatalf("Error scanning row: %v", err)
 		}
 		fmt.Printf("ID: %d, Brand: %s, Model: %s, Year: %d\n",
-			c.ID, c.Brand, c.Model, c.Year)
+			p.ID, p.Brand, p.Model, p.Year)
 	}
 
 	if err = rows.Err(); err != nil {
