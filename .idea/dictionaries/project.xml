@@ -1,8 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="project">
     <words>
+      <w>endlocal</w>
+      <w>errorlevel</w>
       <w>mysecretpassword</w>
+      <w>nobreak</w>
+      <w>popd</w>
       <w>postgre</w>
+      <w>pushd</w>
+      <w>setlocal</w>
       <w>sslmode</w>
     </words>
   </dictionary>
