@@ -1,41 +1,35 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
-	"runtime"
+	"os/signal"
+	"syscall"
+	"time"
 )
-
-func scheduleSelfDelete() {
-	if runtime.GOOS != "windows" {
-		return
-	}
-
-	exePath, err := os.Executable()
-	if err != nil {
-		return
-	}
-
-	batContent := `@echo off
-:loop
-tasklist | find "` + filepath.Base(exePath) + `" >nul
-if not errorlevel 1 (
-	timeout /t 1 /nobreak >nul
-	goto loop
-)
-del "` + exePath + `"
-del "%~f0"`
-
-	batPath := exePath + "_delete.bat"
-	_ = os.WriteFile(batPath, []byte(batContent), 0666)
-
-	cmd := exec.Command("cmd.exe", "/C", batPath)
-	_ = cmd.Start()
-}
 
 func main() {
-	scheduleSelfDelete()
 
-	println("Program Working...2")
+	stopChan := make(chan os.Signal, 1)
+	signal.Notify(stopChan, os.Interrupt, syscall.SIGTERM)
+
+	doneChan := make(chan struct{})
+
+	go func() {
+		<-stopChan
+		fmt.Println("\nReceived shutdown signal...")
+		close(doneChan)
+		time.Sleep(300 * time.Millisecond)
+	}()
+
+	for {
+		select {
+		case <-doneChan:
+			fmt.Println("Shutting down gracefully...")
+			os.Exit(0)
+		default:
+			fmt.Println("Program Running.....")
+			time.Sleep(1 * time.Second)
+		}
+	}
 }
