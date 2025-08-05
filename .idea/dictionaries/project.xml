@@ -3,6 +3,7 @@
     <words>
       <w>endlocal</w>
       <w>errorlevel</w>
+      <w>isready</w>
       <w>mysecretpassword</w>
       <w>nobreak</w>
       <w>popd</w>

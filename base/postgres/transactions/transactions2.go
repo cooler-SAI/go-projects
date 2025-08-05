@@ -56,7 +56,7 @@ func main() {
 	fmt.Println("Starting transaction demonstration in Go with PostgreSQL...")
 
 	// Database connection string. Replace with your actual database credentials.
-	connStr := "user=postgres password=mysecretpassword host=localhost port=5432 dbname=postgres sslmode=disable"
+	connStr := "user=postgres password=example host=localhost port=5432 dbname=postgres sslmode=disable"
 
 	// sql.Open() initializes a connection pool. It does not create a connection itself.
 	db, err := sql.Open("postgres", connStr)
