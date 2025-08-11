@@ -9,7 +9,7 @@ import (
 )
 
 // Account - struct to represent a bank account.
-type Account struct {
+type Account2 struct {
 	ID      int
 	Name    string
 	Balance float64
