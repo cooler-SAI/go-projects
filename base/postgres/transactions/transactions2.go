@@ -122,7 +122,7 @@ func main() {
 	}
 	fmt.Printf("Created account for Bob with ID: %d, Balance: 500.00\n", bobID)
 
-	// --- 3. Execute transaction (successful scenario) ---
+	/*// --- 3. Execute transaction (successful scenario) ---
 	fmt.Println("\n--- Scenario 1: Successful transfer (Alice -> Bob, 100.00) ---")
 	// db.Begin() starts a new database transaction.
 	tx, err := db.Begin()
@@ -146,11 +146,11 @@ func main() {
 			log.Fatalf("Error committing transaction: %v", err)
 		}
 		fmt.Println("Transfer completed and committed successfully.")
-	}
+	}*/
 
 	// --- 4. Execute transaction (error and rollback scenario) ---
 	// To test this scenario, uncomment the "SIMULATED ERROR" block in the transferFunds function.
-	/*fmt.Println("\n--- Scenario 2: Transfer with error (Alice -> Bob, 50.00) ---")
+	fmt.Println("\n--- Scenario 2: Transfer with error (Alice -> Bob, 50.00) ---")
 	tx2, err := db.Begin() // Start a second transaction.
 	if err != nil {
 		log.Fatalf("Error starting second transaction: %v", err)
@@ -169,7 +169,7 @@ func main() {
 			log.Fatalf("Error committing second transaction: %v", cmtErr)
 		}
 		fmt.Println("Transfer completed and committed successfully.")
-	}*/
+	}
 
 	// --- 6. Check final balances ---
 	fmt.Println("\nFinal account balances:")
