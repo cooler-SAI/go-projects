@@ -38,9 +38,9 @@ func transferFunds(tx *sql.Tx, fromAccountID, toAccountID int, amount float64) e
 	// --- SIMULATED ERROR ---
 	// Uncomment the following lines to test the transaction rollback mechanism.
 	// This simulates a failure occurring after the debit but before the credit.
-	// if amount == 50.00 {
-	// 	return fmt.Errorf("simulated network error after debit")
-	// }
+	if amount == 50.00 {
+		return fmt.Errorf("simulated network error after debit")
+	}
 
 	// Step 2: Credit the amount to the receiver's account.
 	_, err = tx.Exec("UPDATE accounts SET balance = balance + $1 WHERE id = $2;", amount, toAccountID)
@@ -150,7 +150,7 @@ func main() {
 
 	// --- 4. Execute transaction (error and rollback scenario) ---
 	// To test this scenario, uncomment the "SIMULATED ERROR" block in the transferFunds function.
-	fmt.Println("\n--- Scenario 2: Transfer with error (Alice -> Bob, 50.00) ---")
+	/*fmt.Println("\n--- Scenario 2: Transfer with error (Alice -> Bob, 50.00) ---")
 	tx2, err := db.Begin() // Start a second transaction.
 	if err != nil {
 		log.Fatalf("Error starting second transaction: %v", err)
@@ -169,7 +169,7 @@ func main() {
 			log.Fatalf("Error committing second transaction: %v", cmtErr)
 		}
 		fmt.Println("Transfer completed and committed successfully.")
-	}
+	}*/
 
 	// --- 6. Check final balances ---
 	fmt.Println("\nFinal account balances:")
