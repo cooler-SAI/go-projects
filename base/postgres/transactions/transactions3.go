@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
+	"sync"
+	"time"
 )
 
 type Account struct {
@@ -38,8 +41,27 @@ func setupDatabase(db *sql.DB) {
 	fmt.Println("Database and initial data set up successfully.")
 }
 
-func readWithIsolationLevel() {
+// readWithIsolationLevel demonstrates how a transaction sees data based on its isolation level.
+func readWithIsolationLevel(db *sql.DB, isolation sql.IsolationLevel, wg *sync.WaitGroup) {
+	defer wg.Done()
 
+	// Define the context and begin a transaction.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Begin a transaction with the specified isolation level.
+	// We use the TxOptions struct to configure the transaction's isolation level.
+	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: isolation})
+	if err != nil {
+		log.Printf("Failed to begin transaction with isolation level %s: %v", isolation, err)
+		return
+	}
+	defer func(tx *sql.Tx) {
+		err := tx.Rollback()
+		if err != nil {
+			log.Printf("Failed to rollback transaction: %v", err)
+		}
+	}(tx) // Ensure rollback happens if something goes wrong.
 }
 
 func main() {
