@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
+	"github.com/cooler-SAI/go-Tools/zerolog"
 	_ "github.com/lib/pq"
 )
 
@@ -19,7 +19,7 @@ func initDatabase(db *sql.DB) {
         );
     `)
 	if err != nil {
-		log.Fatal(err)
+		zerolog.Log.Fatal().Err(err).Msg("Failed to initialize database")
 	}
 }
 
@@ -27,7 +27,7 @@ func createAccount(db *sql.DB, name string, balance float64) {
 	// Inserts a new account with the given name and balance
 	_, err := db.Exec("INSERT INTO accounts (name, balance) VALUES ($1, $2)", name, balance)
 	if err != nil {
-		log.Fatal(err)
+		zerolog.Log.Fatal().Err(err).Msg("Failed to create account")
 	}
 }
 
@@ -35,12 +35,12 @@ func printBalances(db *sql.DB) {
 	// Retrieves and prints all account balances
 	rows, err := db.Query("SELECT name, balance FROM accounts")
 	if err != nil {
-		log.Fatal(err)
+		zerolog.Log.Fatal().Err(err).Msg("Failed to query balances")
 	}
 	defer func(rows *sql.Rows) {
 		err := rows.Close()
 		if err != nil {
-			log.Printf("Error closing rows: %v\n", err)
+			zerolog.Log.Error().Err(err).Msg("Error closing rows")
 		}
 	}(rows)
 
@@ -49,7 +49,7 @@ func printBalances(db *sql.DB) {
 		var name string
 		var balance float64
 		if err := rows.Scan(&name, &balance); err != nil {
-			log.Fatal(err)
+			zerolog.Log.Fatal().Err(err).Msg("Failed to scan row")
 		}
 		fmt.Printf("  %s: %.2f\n", name, balance)
 	}
@@ -106,45 +106,51 @@ func transferMoney(db *sql.DB, from, to string, amount float64) error {
 }
 
 func main() {
+	// Initializes the logger
+	zerolog.Init()
+
+	zerolog.Log.Info().Msg("Set up zerolog in production settings")
+
+	fmt.Println("Starting transaction demonstration in Go with PostgreSQL...")
+
 	// Database connection string
 	connStr := "user=postgres password=example host=localhost port=5432 dbname=postgres sslmode=disable"
 
 	// Opens a database connection
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal(err)
+		zerolog.Log.Fatal().Err(err).Msg("Failed to open database connection")
 	}
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-			log.Printf("Error closing DB connection: %v\n", err)
+			zerolog.Log.Error().Err(err).Msg("Error closing DB connection")
 		}
 	}(db)
 
 	// Initializes the database
 	initDatabase(db)
-	fmt.Println("Database initialized.")
+	zerolog.Log.Info().Msg("Database initialized.")
 
 	// Creates accounts
 	createAccount(db, "Alice", 1000.00)
 	createAccount(db, "Bob", 500.00)
-	fmt.Println("Accounts created.")
+	zerolog.Log.Info().Msg("Accounts created.")
 
 	// Prints initial balances
 	printBalances(db)
 
 	// Transfers money
-	fmt.Println("Transferring money...")
+	zerolog.Log.Info().Msg("Transferring money...")
 	err = transferMoney(db, "Alice", "Bob", 200.00)
 	if err != nil {
-		log.Fatal(err)
+		zerolog.Log.Fatal().Err(err).Msg("Failed to transfer money")
 	}
-	fmt.Println("Money transferred.")
+	zerolog.Log.Info().Msg("Money transferred.")
 
 	// Prints final balances
 	printBalances(db)
 
-	fmt.Println("Done.")
-	fmt.Println("Don't forget to stop Docker-container with: docker stop my-postgres")
-
+	zerolog.Log.Info().Msg("Done.")
+	zerolog.Log.Info().Msg("Don't forget to stop Docker-container with: docker stop my-postgres")
 }
