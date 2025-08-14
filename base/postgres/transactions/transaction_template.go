@@ -21,7 +21,7 @@ func TransferMoney(db *sql.DB, from, to int, amount float64) error {
 		}
 	}()
 
-	if _, err = tx.Exec("UPDATE...", from, -amount); err != nil {
+	if _, err = tx.Exec("UPDATE", from, -amount); err != nil {
 		return err
 	}
 
