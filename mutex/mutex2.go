@@ -23,7 +23,6 @@ func withoutMutex() {
 		}()
 	}
 
-	// Ждем, пока все горутины завершатся
 	wg.Wait()
 	fmt.Printf("Final counter value: %d\n", counter)
 	fmt.Println("Expected value: 1000")
