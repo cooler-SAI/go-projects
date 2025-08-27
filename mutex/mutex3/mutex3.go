@@ -41,7 +41,6 @@ func withMutexNew3() {
 			mu.Unlock()
 		}()
 	}
-	// wg.Wait() ДОЛЖЕН БЫТЬ ЗДЕСЬ, после цикла!
 	wg.Wait()
 	fmt.Printf("Final counter value: %d\n", counter)
 	fmt.Println("Expected value: 1000")
