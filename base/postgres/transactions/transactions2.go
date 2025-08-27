@@ -8,7 +8,6 @@ import (
 	_ "github.com/lib/pq" // The PostgreSQL driver. The blank identifier `_` is used because we only need its side effects (registering the driver).
 )
 
-// Account - struct to represent a bank account.
 type Account2 struct {
 	ID      int
 	Name    string
@@ -188,7 +187,7 @@ func main() {
 
 	// Iterate over the result set.
 	for rows.Next() {
-		var acc Account
+		var acc Account2
 		err := rows.Scan(&acc.ID, &acc.Name, &acc.Balance)
 		if err != nil {
 			log.Fatalf("Error scanning account: %v", err)
