@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func withoutRWMutexNew4() {
+func withoutRWMutex() {
 	numGoroutines := 1000
 	counter := 0
 	var wg sync.WaitGroup
@@ -23,7 +23,7 @@ func withoutRWMutexNew4() {
 	fmt.Println("Expected value: 1000")
 }
 
-func withRWMutexNew4() {
+func withRWMutex() {
 	numGoroutines := 1000
 	counter := 0
 	var rwmu sync.RWMutex
@@ -45,6 +45,6 @@ func withRWMutexNew4() {
 }
 
 func main() {
-	withoutRWMutexNew4()
-	withRWMutexNew4()
+	withoutRWMutex()
+	withRWMutex()
 }
