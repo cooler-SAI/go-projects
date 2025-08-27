@@ -80,9 +80,23 @@ func withRWMutexFull() {
 
 }
 
+func Test() {
+	var wg sync.WaitGroup
+	wg.Add(5)
+	for i := 0; i < 5; i++ {
+		go func(workerID int) { // workerID - worker's personal ID
+			fmt.Printf("Worker #%d started work\n", workerID)
+			defer wg.Done()
+		}(i) // ← Here the current value of i is passed
+	}
+	wg.Wait()
+	fmt.Println("All workers finished work")
+}
+
 func main() {
 	withoutRWMutex()
 	withRWMutex()
 
 	withRWMutexFull()
+	Test()
 }
