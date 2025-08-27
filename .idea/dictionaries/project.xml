@@ -9,6 +9,7 @@
       <w>popd</w>
       <w>postgre</w>
       <w>pushd</w>
+      <w>rwmu</w>
       <w>setlocal</w>
       <w>sslmode</w>
     </words>
