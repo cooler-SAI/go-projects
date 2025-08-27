@@ -44,7 +44,45 @@ func withRWMutex() {
 	fmt.Println("Expected value: 1000")
 }
 
+func withRWMutexFull() {
+	var rwmu sync.RWMutex
+	var wg sync.WaitGroup
+	counter := 0
+	numWriters := 300 // Количество goroutine-писателей
+	numReaders := 700 // Количество goroutine-читателей
+	totalGoroutines := numWriters + numReaders
+
+	fmt.Printf("\nRunning demo with a RWMutex. Launching %d goroutines (%d readers, %d writers).\n", totalGoroutines, numReaders, numWriters)
+	wg.Add(totalGoroutines)
+	for i := 0; i < numWriters; i++ {
+		go func(i int) {
+			defer wg.Done()
+			rwmu.Lock()
+			counter++
+			rwmu.Unlock()
+
+		}(i)
+	}
+
+	for i := 0; i < numReaders; i++ {
+		go func(id int) {
+			defer wg.Done()
+			rwmu.RLock()
+			value := counter
+			fmt.Printf("Reader %d: read value %d\n", id, value)
+			rwmu.RUnlock()
+		}(i)
+	}
+	wg.Wait()
+	fmt.Printf("Final counter value: %d\n", counter)
+	fmt.Println("Expected value: 300")
+	fmt.Println("RWMutex allows many concurrent readers but only one writer, making it more efficient for read-heavy workloads.")
+
+}
+
 func main() {
 	withoutRWMutex()
 	withRWMutex()
+
+	withRWMutexFull()
 }
