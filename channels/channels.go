@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/cooler-SAI/go-Tools/zerolog"
 )
@@ -28,14 +27,12 @@ func consumerGoroutine(inChan <-chan int, wg *sync.WaitGroup) {
 }
 
 func main() {
-
 	var wg sync.WaitGroup
 	zerolog.Init()
+
 	zerolog.Log.Info().Msg("Starting channel demonstration...")
 
-	time.Sleep(1 * time.Second)
 	fmt.Println("Starting channel demonstration...")
-
 	dataChan := make(chan int, 5)
 
 	wg.Add(1)
@@ -46,5 +43,4 @@ func main() {
 
 	wg.Wait()
 	fmt.Println("All goroutines finished. Exiting main.")
-
 }
