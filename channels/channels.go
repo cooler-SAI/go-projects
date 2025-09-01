@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/cooler-SAI/go-Tools/zerolog"
 )
@@ -30,18 +31,10 @@ func main() {
 
 	var wg sync.WaitGroup
 	zerolog.Init()
-
-	defer func() {
-		var i interface{} = zerolog.Log
-		if syncLogger, ok := i.(interface{ Sync() error }); ok {
-			if err := syncLogger.Sync(); err != nil {
-				fmt.Printf("Error syncing zerolog: %v\n", err)
-			}
-		}
-	}()
-
-	fmt.Println("Starting channel demonstration...")
 	zerolog.Log.Info().Msg("Starting channel demonstration...")
+
+	time.Sleep(1 * time.Second)
+	fmt.Println("Starting channel demonstration...")
 
 	dataChan := make(chan int, 5)
 
@@ -53,4 +46,5 @@ func main() {
 
 	wg.Wait()
 	fmt.Println("All goroutines finished. Exiting main.")
+
 }
