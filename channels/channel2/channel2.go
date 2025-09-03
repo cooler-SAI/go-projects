@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -12,7 +13,7 @@ type Task struct {
 }
 
 func main() {
-
+	var wg sync.WaitGroup
 	taskChan := make(chan Task, 2)
 
 	// producer
@@ -23,7 +24,9 @@ func main() {
 	}()
 
 	// consumer
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		for task := range taskChan {
 			fmt.Printf("Got task: %s (ID: %d)\n", task.Name, task.ID)
 			// work similar to time-consuming task
@@ -33,6 +36,6 @@ func main() {
 		}
 	}()
 
-	// give some time for goroutines to finish
-	time.Sleep(2 * time.Second)
+	// Wait for the consumer to finish processing all tasks.
+	wg.Wait()
 }
