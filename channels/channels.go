@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/cooler-SAI/go-Tools/zerolog"
@@ -9,9 +8,9 @@ import (
 
 func producerGoroutine(outChan chan<- int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Println("Producer goroutine started")
+	zerolog.Log.Info().Msg("Producer goroutine started")
 	for i := 0; i < 10; i++ {
-		fmt.Printf("Producer goroutine sending number %d\n", i)
+		zerolog.Log.Info().Int("number", i).Msg("Producer goroutine sending number")
 		outChan <- i
 	}
 	close(outChan)
@@ -19,11 +18,11 @@ func producerGoroutine(outChan chan<- int, wg *sync.WaitGroup) {
 
 func consumerGoroutine(inChan <-chan int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Println("Consumer goroutine started")
+	zerolog.Log.Info().Msg("Consumer goroutine started")
 	for num := range inChan {
-		fmt.Printf("Consumer goroutine received number %d\n", num)
+		zerolog.Log.Info().Int("number", num).Msg("Consumer goroutine received number")
 	}
-	fmt.Println("Consumer goroutine stopped")
+	zerolog.Log.Info().Msg("Consumer goroutine stopped")
 }
 
 func main() {
@@ -32,7 +31,6 @@ func main() {
 
 	zerolog.Log.Info().Msg("Starting channel demonstration...")
 
-	fmt.Println("Starting channel demonstration...")
 	dataChan := make(chan int, 5)
 
 	wg.Add(1)
@@ -42,5 +40,5 @@ func main() {
 	go consumerGoroutine(dataChan, &wg)
 
 	wg.Wait()
-	fmt.Println("All goroutines finished. Exiting main.")
+	zerolog.Log.Info().Msg("All goroutines finished. Exiting main.")
 }
