@@ -48,8 +48,8 @@ func withRWMutexFull() {
 	var rwmu sync.RWMutex
 	var wg sync.WaitGroup
 	counter := 0
-	numWriters := 300 // Количество goroutine-писателей
-	numReaders := 700 // Количество goroutine-читателей
+	numWriters := 300
+	numReaders := 700
 	totalGoroutines := numWriters + numReaders
 
 	fmt.Printf("\nRunning demo with a RWMutex. Launching %d goroutines (%d readers, %d writers).\n", totalGoroutines, numReaders, numWriters)
@@ -84,10 +84,10 @@ func Test() {
 	var wg sync.WaitGroup
 	wg.Add(5)
 	for i := 0; i < 5; i++ {
-		go func(workerID int) { // workerID - worker's personal ID
+		go func(workerID int) {
 			fmt.Printf("Worker #%d started work\n", workerID)
 			defer wg.Done()
-		}(i) // ← Here the current value of i is passed
+		}(i)
 	}
 	wg.Wait()
 	fmt.Println("All workers finished work")
