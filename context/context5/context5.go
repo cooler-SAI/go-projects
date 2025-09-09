@@ -22,7 +22,9 @@ func deliverPizza(ctx context.Context, pizzaName string) {
 func main() {
 	fmt.Println("Preparing to order pizza...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second) // 20 seconds timeout
+	waitingRand := rand.Intn(10) + 25
+	ctx, cancel := context.WithTimeout(context.Background(),
+		time.Duration(waitingRand)*time.Second) // 20 seconds timeout
 	defer cancel()
 
 	// Start pizza delivery in a separate goroutine
