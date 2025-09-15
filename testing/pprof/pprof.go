@@ -4,37 +4,41 @@ import (
 	"fmt"
 	"os"
 	"runtime/pprof"
+	"strings"
 )
 
-func processStringConcatenations(count int) string {
-	var result string
+func processStringConcatenationsWithBuilder(count int) string {
+	var sb strings.Builder
+	sb.Grow(count * len("some_string_part"))
 	for i := 0; i < count; i++ {
-		result += "some_string_part"
+		sb.WriteString("some_string_part")
 	}
-	return result
+	return sb.String()
 }
 
 func main() {
-	cpuProfileF, err := os.Create("./pprof/cpu_profile.prof")
+	cpuProfileFile, err := os.Create("./pprof/cpu_optimized.prof")
 	if err != nil {
-		fmt.Println("Error exist creating CPU profile file:", err)
 		panic(err)
-
 	}
-	defer func(cpuProfileF *os.File) {
-		err := cpuProfileF.Close()
+	defer func(cpuProfileFile *os.File) {
+		err := cpuProfileFile.Close()
 		if err != nil {
-			fmt.Println("Error exist closing CPU profile file:", err)
+			fmt.Println("Could not close CPU profile file:", err)
 		}
-	}(cpuProfileF)
+	}(cpuProfileFile)
 
-	err2 := pprof.StartCPUProfile(cpuProfileF)
+	err2 := pprof.StartCPUProfile(cpuProfileFile)
 	if err2 != nil {
+		fmt.Println("Could not start CPU profile:", err2)
 		return
 	}
 	defer pprof.StopCPUProfile()
-	processStringConcatenations(100000)
 
-	fmt.Println("CPU profiling completed and saved to cpu_profile.prof")
+	fmt.Println("Starting performance-intensive task (optimized)...")
+
+	processStringConcatenationsWithBuilder(1000000)
+
+	fmt.Println("Task finished. Profile data written to cpu_optimized.prof")
 
 }
