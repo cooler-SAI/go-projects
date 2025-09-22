@@ -47,7 +47,6 @@ func main() {
 			time.Sleep(100 * time.Millisecond)
 		}
 	}()
-
 	// Informational message about profiling server startup
 	log.Println("Pprof server started on http://localhost:6060")
 	log.Println("Available profiles:")
