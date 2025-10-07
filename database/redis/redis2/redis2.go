@@ -12,16 +12,35 @@ import (
 
 var redisClient *redis.Client
 
+func initRedis() error {
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // если есть пароль
+		DB:       0,
+		PoolSize: 10, // размер пула соединений
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return redisClient.Ping(ctx).Err()
+}
+
 func main() {
 	fmt.Println("🚀 Starting Redis Demo...")
 
-	// Initialize Redis client
-	redisClient = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379", // Redis server address
-		DB:   0,                // Database number
-	})
+	if err := initRedis(); err != nil {
+		log.Fatalf("❌ Redis connection failed: %v", err)
+	}
+	defer func(redisClient *redis.Client) {
+		err := redisClient.Close()
+		if err != nil {
+			fmt.Printf("Warning: Error closing Redis: %v\n", err)
+		}
+	}(redisClient)
 
-	// Create context
+	fmt.Println("✅ Successfully connected to Redis!")
+
 	ctx := context.Background()
 
 	// Test connection
