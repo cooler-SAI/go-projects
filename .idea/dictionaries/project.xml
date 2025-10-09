@@ -4,13 +4,17 @@
       <w>endlocal</w>
       <w>errorlevel</w>
       <w>isready</w>
+      <w>kozlova</w>
       <w>mysecretpassword</w>
       <w>nobreak</w>
+      <w>petrova</w>
       <w>popd</w>
       <w>postgre</w>
+      <w>pubsub</w>
       <w>pushd</w>
       <w>rwmu</w>
       <w>setlocal</w>
+      <w>sidorov</w>
       <w>sslmode</w>
     </words>
   </dictionary>
