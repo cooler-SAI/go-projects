@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    restart: always
+    container_name: kafka
+    ports:
+      - "9092:9092" # Port for Go producers and consumers
+    environment:
+      # --- KRaft (Kafka Raft) Mode Configuration ---
+      KAFKA_NODE_ID: 1 # Unique node ID
+      KAFKA_PROCESSORS: broker,controller # Node acts as both Broker and Controller
+
+      # Listeners for internal and external access
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+
+      # KRaft Quorum configuration
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+
+      # Additional configuration
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: /tmp/kraft-storage # Path for KRaft data storage
+
+    # Command for initializing and starting Kafka in KRaft mode
+    command:
+      - /bin/bash
+      - -c
+      - |
+        # 1. Format storage (create Cluster ID and metadata)
+        # --ignore-formatted allows the command to run on every startup
+        kafka-storage format --ignore-formatted --cluster-id "$$(kafka-storage random-uuid)" -t /tmp/kraft-storage
+        
+        # 2. Start the server
+        /etc/confluent/docker/run
